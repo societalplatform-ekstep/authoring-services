@@ -3192,10 +3192,10 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				if(hasAssessment!=null && hasAssessment==true) {
 					parent.put(LexConstants.HAS_ASSESSMENT, true);
 				}
-				
-				categoryType = (String) child.get(LexConstants.CATEGORY_TYPE);
-				resourceType = (String) child.get(LexConstants.RESOURCE_TYPE);
-				
+
+				categoryType = String.valueOf(child.get(LexConstants.CATEGORY_TYPE));
+				resourceType = String.valueOf(child.get(LexConstants.RESOURCE_TYPE));
+
 				if(categoryType.equals(LexConstants.ASSESSMENT)||resourceType.equals(LexConstants.ASSESSMENT)) {
 					child.put(LexConstants.HAS_ASSESSMENT, true);
 					parent.put(LexConstants.HAS_ASSESSMENT, true);
