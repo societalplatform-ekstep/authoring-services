@@ -3177,10 +3177,10 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		while(!parentObjs.isEmpty()) {
 			
 			Map<String,Object> parent = parentObjs.poll();
-			
-			String categoryType = (String) parent.get(LexConstants.CATEGORY_TYPE);
-			String resourceType = (String) parent.get(LexConstants.RESOURCE_TYPE);
-			
+
+			String categoryType = String.valueOf(parent.get(LexConstants.CATEGORY_TYPE));
+			String resourceType = String.valueOf(parent.get(LexConstants.RESOURCE_TYPE));
+
 			if(categoryType.equals(LexConstants.ASSESSMENT)||resourceType.equals(LexConstants.ASSESSMENT)) {
 				parent.put(LexConstants.HAS_ASSESSMENT, true);
 			}
