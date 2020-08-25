@@ -2802,7 +2802,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				delta = 1;
 			} else if (change < 0) {
 				delta = -1;
-			} else if (change == 0) {
+			} else {
 				delta = 0;
 			}
 		} catch (Exception e) {
