@@ -3178,8 +3178,8 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			
 			Map<String,Object> parent = parentObjs.poll();
 
-			String categoryType = String.valueOf(parent.get(LexConstants.CATEGORY_TYPE));
-			String resourceType = String.valueOf(parent.get(LexConstants.RESOURCE_TYPE));
+			String categoryType = (String) parent.getOrDefault(LexConstants.CATEGORY_TYPE, "");
+			String resourceType = (String) parent.getOrDefault(LexConstants.RESOURCE_TYPE, "");
 
 			if(categoryType.equals(LexConstants.ASSESSMENT)||resourceType.equals(LexConstants.ASSESSMENT)) {
 				parent.put(LexConstants.HAS_ASSESSMENT, true);
@@ -3193,8 +3193,8 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					parent.put(LexConstants.HAS_ASSESSMENT, true);
 				}
 
-				categoryType = String.valueOf(child.get(LexConstants.CATEGORY_TYPE));
-				resourceType = String.valueOf(child.get(LexConstants.RESOURCE_TYPE));
+				categoryType = (String) child.getOrDefault(LexConstants.CATEGORY_TYPE, "");
+				resourceType = (String) child.getOrDefault(LexConstants.RESOURCE_TYPE, "");
 
 				if(categoryType.equals(LexConstants.ASSESSMENT)||resourceType.equals(LexConstants.ASSESSMENT)) {
 					child.put(LexConstants.HAS_ASSESSMENT, true);
