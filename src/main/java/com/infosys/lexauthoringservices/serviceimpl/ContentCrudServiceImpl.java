@@ -107,7 +107,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 
 	@Autowired
 	private LexLogger logger;
-	
+
 	@Autowired
 	ConfigurableContentHierarchyService contentTypeHierarchyService;
 
@@ -138,12 +138,12 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			session.close();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public String createContentNodeForMigrationV3(String rootOrg, String org, Map<String, Object> requestMap)
 			throws BadRequestException, Exception {
-		
+
 		Map<String, Object> reqContentMeta = new HashMap<>();
 		Session session = neo4jDriver.session();
 		Map<String, Object> boolMap = new HashMap<>();
@@ -184,16 +184,16 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				map.put(LexConstants.ADDED_ON,addedOn);
 				UpdateRelationRequest updateRelationRequest = new UpdateRelationRequest(identifier, child, map);
 				updateRelations.add(updateRelationRequest);
-				
+
 				Map<String,Object> updateMap = new HashMap<>();
 				updateMap.put(LexConstants.IS_STAND_ALONE, false);
 				UpdateMetaRequest updateChildStandAlone = new UpdateMetaRequest(child, updateMap);
 				updateIsStandAloneList.add(updateChildStandAlone);
-				
+
 				existingChildren.remove(child);
-				
+
 			}
-			
+
 			if(existingChildren.size()>0) {
 				List<ContentNode> oldNodes = graphService.getNodesByUniqueIdV2(rootOrg, existingChildren, tx);
 				for(ContentNode oldNode:oldNodes) {
@@ -209,10 +209,10 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 						UpdateMetaRequest updateIsStandAloneTrue = new UpdateMetaRequest(oldNode.getIdentifier(), updateMap);
 						updateIsStandAloneList.add(updateIsStandAloneTrue);
 					}
-					
+
 				}
 			}
-			
+
 			graphService.updateNodesV2(rootOrg, updateIsStandAloneList, tx);
 			graphService.deleteChildren(rootOrg, Arrays.asList(identifier), tx);
 			graphService.createChildRelationsV2(rootOrg, identifier, updateRelations, tx);
@@ -238,7 +238,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 
 	private Map<String,Object> defaultMetaPopulationBasicValidations(String rootOrg, String org, Map<String, Object> reqMap,
 			List<String> children, Map<String, Object> boolMap) throws BadRequestException,Exception
-	{ 
+	{
 			Map<String, Object> contentMeta = new HashMap<>(reqMap);
 
 //			contentMeta.remove(LexConstants.STATUS);
@@ -253,7 +253,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			if(isSearchable==null) {
 				isSearchable=true;
 			}
-			
+
 			contentMeta.put(LexConstants.IS_STAND_ALONE, true);
 			contentMeta.put(LexConstants.ROOT_ORG, rootOrg);
 			if(contentMeta.get(LexConstants.ISEXTERNAL)==null || contentMeta.get(LexConstants.ISEXTERNAL).toString().isEmpty()) {
@@ -292,7 +292,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			if (config != null && (config.getValue() != null && !config.getValue().isEmpty())) {
 				dataSource = config.getValue();
 			}
-			
+
 			if(dataSource==null || dataSource.equalsIgnoreCase("0")) {
 				contentMeta.put(LexConstants.EXPIRY_DATE, "99991231T235959+0000");
 			}
@@ -366,8 +366,8 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			}
 			return contentMeta;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public String createContentNodeForMigrationV2(String rootOrg, String org, Map<String, Object> requestMap)
@@ -412,16 +412,16 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				map.put(LexConstants.ADDED_ON,addedOn);
 				UpdateRelationRequest updateRelationRequest = new UpdateRelationRequest(identifier, child, map);
 				updateRelations.add(updateRelationRequest);
-				
+
 				Map<String,Object> updateMap = new HashMap<>();
 				updateMap.put(LexConstants.IS_STAND_ALONE, false);
 				UpdateMetaRequest updateChildStandAlone = new UpdateMetaRequest(child, updateMap);
 				updateIsStandAloneList.add(updateChildStandAlone);
-				
+
 				existingChildren.remove(child);
-				
+
 			}
-			
+
 			if(existingChildren.size()>0) {
 				List<ContentNode> oldNodes = graphService.getNodesByUniqueIdV2(rootOrg, existingChildren, tx);
 				for(ContentNode oldNode:oldNodes) {
@@ -437,10 +437,10 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 						UpdateMetaRequest updateIsStandAloneTrue = new UpdateMetaRequest(oldNode.getIdentifier(), updateMap);
 						updateIsStandAloneList.add(updateIsStandAloneTrue);
 					}
-					
+
 				}
 			}
-			
+
 			graphService.updateNodesV2(rootOrg, updateIsStandAloneList, tx);
 			graphService.deleteChildren(rootOrg, Arrays.asList(identifier), tx);
 			graphService.createChildRelationsV2(rootOrg, identifier, updateRelations, tx);
@@ -472,7 +472,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		if(isSearchable==null) {
 			isSearchable=true;
 		}
-		
+
 		contentMeta.put(LexConstants.IS_STAND_ALONE, true);
 		contentMeta.put(LexConstants.ROOT_ORG, rootOrg);
 		contentMeta.put(LexConstants.ISEXTERNAL, true);
@@ -509,7 +509,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		if (config != null && (config.getValue() != null && !config.getValue().isEmpty())) {
 			dataSource = config.getValue();
 		}
-		
+
 		if(dataSource==null || dataSource.equalsIgnoreCase("0")) {
 			contentMeta.put(LexConstants.EXPIRY_DATE, "99991231T235959+0000");
 		}
@@ -676,10 +676,10 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 	public String createContentNode(String rootOrg, String org, Map<String, Object> requestMap) throws Exception {
 
 		Map<String, Object> contentMeta = (Map<String, Object>) requestMap.get(LexConstants.CONTENT);
-		
+
 //		boolean isReco = (boolean) requestMap.getOrDefault("isRecoKb", false);
 //		String region = (String) requestMap.get(LexConstants.RECOREGION);
-//		
+//
 //		if(isReco) {
 //			if(region==null || region.isEmpty()) {
 //				throw new BadRequestException("Region cannot be null/empty");
@@ -689,7 +689,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 //				contentMeta.put(LexConstants.LABELS, Arrays.asList(validReco));
 //			}
 //		}
-		
+
 		createOperationValidations(contentMeta);
 
 		// generate unique id for content
@@ -717,12 +717,12 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		}
 
 		String userId = contentMeta.get(LexConstants.CREATED_BY).toString();
-		
+
 		logger.info("Starting PID Call");
 		Map<String, Object> userData = getUserDataFromUserId(rootOrg, userId,
 				Arrays.asList(PIDConstants.UUID, PIDConstants.FIRST_NAME, PIDConstants.LAST_NAME, PIDConstants.EMAIL));
 		logger.info("PID Call is complete");
-		
+
 		if (userData == null || userData.isEmpty()) {
 			throw new BadRequestException("No user with id : " + userId);
 		}
@@ -750,26 +750,26 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 	}
 
 	private String recoKbValidations(String region,String rootOrg,Map<String,Object> contentMeta) {
-		
+
 		String recoValue = "Recommendation KB for " + region.replace(" ", "").toLowerCase();
 		String contentType = (String) contentMeta.getOrDefault(LexConstants.CONTENT_TYPE, "");
-		
+
 		if(contentType==null||contentType.isEmpty()) {
 			throw new BadRequestException("Invalid contentType, cannot be null");
 		}
-		
+
 		if(!contentType.equals(LexConstants.K_BOARD)) {
 			throw new BadRequestException("Recommendations can only be provided for KB");
 		}
 		Session session = neo4jDriver.session();
-		
+
 		Map<String,Object> resultMap = session.readTransaction(new TransactionWork<Map<String,Object>>() {
 			@Override
 			public Map<String,Object> execute(Transaction tx){
 				return node_with_labels(rootOrg,recoValue,tx);
 			}
 		});
-		
+
 		if(resultMap==null || resultMap.isEmpty()) {
 			return recoValue;
 		}
@@ -1004,8 +1004,8 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			session.close();
 		}
 	}
-	
-	
+
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public void updateContentHierarchyV2(String rootOrg, String org, Map<String, Object> requestMap, String migration)
@@ -1049,10 +1049,10 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			session.close();
 		}
 	}
-	
-	
 
-	
+
+
+
 
 	public void updateTranscodeMap(String rootOrg, String identifier) throws Exception {
 		Map<String, Object> updateMap = new HashMap<>();
@@ -1087,7 +1087,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 	@SuppressWarnings("unchecked")
 	private void updateNodes(String rootOrg, Map<String, Object> nodesModified, Transaction transaction)
 			throws Exception {
-		
+
 		List<String> notAllowedToUpdateStatuses = Arrays.asList(LexConstants.Status.Expired.getStatus(),LexConstants.Status.Deleted.getStatus(),LexConstants.Status.UnPublish.getStatus());
 		if (nodesModified == null || nodesModified.isEmpty()) {
 			return;
@@ -1106,7 +1106,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		List<UpdateMetaRequest> updateMetaRequests = new ArrayList<>();
 		List<ContentNode> imageNodesToBeCreated = new ArrayList<>();
 		List<String> authoringDisabledIds = new ArrayList<>();
-		
+
 		//iterating on requestMaps from request
 		for (Map.Entry<String, Object> entry : nodesModified.entrySet()) {
 			String identifier = entry.getKey();
@@ -1114,7 +1114,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			if (!idToContentMapping.containsKey(identifier)) {
 				throw new ResourceNotFoundException("Content with identifier: " + entry.getKey() + " does not exist");
 			}
-			
+
 			//add all data to be updated to updateMap
 			Map<String, Object> updateMap = (Map<String, Object>) entry.getValue();
 			updateMap = (Map<String, Object>) updateMap.get(LexConstants.METADATA);
@@ -1125,11 +1125,11 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 
 			Boolean authoringDisabled = (Boolean) contentNode.getMetadata().get(LexConstants.AUTHORING_DISABLED);
 			Boolean metaEditDisabled = (Boolean) contentNode.getMetadata().get(LexConstants.META_EDIT_DISABLED);
-			
+
 			if(authoringDisabled==null) {
 				authoringDisabled=false;
 			}
-			
+
 			if(metaEditDisabled==null) {
 				metaEditDisabled=false;
 			}
@@ -1137,14 +1137,14 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			if(authoringDisabled) {
 				authoringDisabledIds.add(contentNode.getIdentifier());
 			}
-			
+
 			//if isMetaEditingDisabled is true then we do not allow contents to be edited
 			if(metaEditDisabled) {
 				if(!authoringDisabledIds.contains(contentNode.getIdentifier())) {
 					authoringDisabledIds.add(contentNode.getIdentifier());
 				}
 			}
-			
+
 			//if authoringDisabled is null or false continue with update and img node logic
 			if(authoringDisabled==null||authoringDisabled==false) {
 				//if metaEditDisabled is null or false continue with update and img node logic
@@ -1152,7 +1152,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					//if node being updated is live then img node logic --->>
 					if (contentNode.getMetadata().get(LexConstants.STATUS).equals(LexConstants.Status.Live.getStatus())) {
 						String imageNodeIdentifier = identifier + LexConstants.IMG_SUFFIX;
-		
+
 						//if .img node already exists in idToContent map perform updates on existsing .img node
 						if (idToContentMapping.containsKey(imageNodeIdentifier)) {
 							updateMetaRequests.add(new UpdateMetaRequest(imageNodeIdentifier, updateMap));
@@ -1175,7 +1175,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					}
 				}
 			}
-		}		
+		}
 
 		List<Map<String, Object>> imageNodesMetas = imageNodesToBeCreated.stream()
 				.map(imageNode -> imageNode.getMetadata()).collect(Collectors.toList());
@@ -1187,20 +1187,20 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		//create all corresponding relations to .img node
 		graphService.mergeRelations(rootOrg, GraphUtil.createUpdateRelationRequestsForImageNodes(imageNodesToBeCreated),
 				transaction);
-		
+
 		if(authoringDisabledIds.size()>0) {
 			throw new BadRequestException("The following Ids cannot be edited because either status is in ['Deleted','Expired','Unpublished'] or contents are imported : " + authoringDisabledIds);
 		}
 
 	}
-	
+
 	private void updateHierarchyV2(String rootOrg, Map<String, Object> hierarchy, Transaction transaction) throws Exception {
-		
+
 		//if hierarchy is null or empty return
 		if(hierarchy==null||hierarchy.isEmpty()) {
 			return;
 		}
-		
+
 		//ADD all parentIds and child ids along with .img ids to idsFetchList list --> contd
 		List<String> contentIdsToFetch = new ArrayList<>(hierarchy.keySet());
 		//all possible identifiers are added to contentIdsToFetch list
@@ -1208,39 +1208,39 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		// contd here-->
 		contentIdsToFetch.addAll(contentIdsToFetch.stream().map(identifier -> identifier + LexConstants.IMG_SUFFIX)
 				.collect(Collectors.toList()));
-		
+
 		//fetch all nodes from above created list
 		//create a idToContentMap with key as identifier and value as the ContentNode
 		Map<String,ContentNode> idToContentMapping = new HashMap<>();
-		
+
 		List<Map<String,Object>> configHierarchyData = contentTypeHierarchyService.getAllContentHierarchy(rootOrg);
 
 		List<String> fields = getFieldsFromConfigData(configHierarchyData);
-		
+
 		if(!fields.contains(LexConstants.CONTENT_TYPE)) {
 			fields.add(LexConstants.CONTENT_TYPE);
 		}
-		
+
 		if(!fields.contains(LexConstants.STATUS)) {
 			fields.add(LexConstants.STATUS);
 		}
-		
+
 		//TODO change to v3 and test
 		graphService.getNodesByUniqueIdForHierarchyUpdateV3(rootOrg, contentIdsToFetch,fields, transaction)
 		//adding all contentNodes to the map with key as identifier and value being the complete node
 			.forEach(contentNode -> idToContentMapping.put(contentNode.getIdentifier(), contentNode));
-		
-		
+
+
 //		//returns all contentNodes with complete meta along with minimal parent and child data
 //		graphService.getNodesByUniqueIdForHierarchyUpdateV2(rootOrg, contentIdsToFetch, transaction)
 //		//adding all contentNodes to the map with key as identifier and value being the complete node
 //			.forEach(contentNode -> idToContentMapping.put(contentNode.getIdentifier(), contentNode));
-		
+
 		List<UpdateRelationRequest> updateRelationRequests = new ArrayList<>();
 		List<String> idsForChildrenDeletion = new ArrayList<>();
 		List<UpdateMetaRequest> updateMetaRequests = new ArrayList<>();
 		List<String> authoringDisabledIds = new ArrayList<>();
-		
+
 		//iterating on requestMap
 				for (Map.Entry<String, Object> entry : hierarchy.entrySet()) {
 					Boolean isLearningPath = false;
@@ -1248,19 +1248,19 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					if (!idToContentMapping.containsKey(entry.getKey())) {
 						throw new ResourceNotFoundException("Content with identifier: " + entry.getKey() + " does not exist.");
 					}
-					
+
 					//if content is KB OR content is not live -> original id and node is returned
 					//else .img id and node is returned
 					ContentNode contentNodeToUpdate = findContentNodeToUpdate(idToContentMapping, entry);
-					
+
 					// content is in live and image node does not exist so not updating the hierarchy
 					if (contentNodeToUpdate == null)
 						continue;
-					
+
 					if(contentNodeToUpdate.getMetadata().get(LexConstants.CONTENT_TYPE).equals(LexConstants.ContentType.LearningPath.getContentType())) {
 						isLearningPath=true;
 					}
-					
+
 					//TODO get data from configurable content hierarchy table for this contentType
 					List<Map<String, Object>> applicableChildrenData = getContentTypeDataFromConfigRootOrgData(configHierarchyData,(String) contentNodeToUpdate.getMetadata().get(LexConstants.CONTENT_TYPE));
 //					List<Map<String, Object>> applicableChildrenData = contentTypeHierarchyService.getContentHierarchyForContentType(rootOrg, (String) contentNodeToUpdate.getMetadata().get(LexConstants.CONTENT_TYPE));
@@ -1268,25 +1268,25 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					//if authoring disabled is null or false continue else add to list
 					Boolean authoringDisabled =  (Boolean) contentNodeToUpdate.getMetadata().get(LexConstants.AUTHORING_DISABLED);
 					Boolean isMetaEditingDisabled = (Boolean) contentNodeToUpdate.getMetadata().get(LexConstants.META_EDIT_DISABLED);
-					
+
 					if(authoringDisabled==null) {
 						authoringDisabled=false;
 					}
-					
+
 					if(isMetaEditingDisabled==null) {
 						isMetaEditingDisabled=false;
 					}
-					
+
 					if(authoringDisabled==true||isMetaEditingDisabled==true) {
 						authoringDisabledIds.add(contentNodeToUpdate.getIdentifier());
 					}
-					
+
 					else {
 						// removing this particular id from parents of its children.
 						//??????????????
 						ensureHierarchyCorrectnessForHierarchyUpdate(idToContentMapping, contentNodeToUpdate);
 						idsForChildrenDeletion.add(contentNodeToUpdate.getIdentifier());
-			
+
 						// create the new Relations, image node will be in the same index
 						List<Map<String, Object>> childrenMaps = (List<Map<String, Object>>) ((Map<String, Object>) entry
 								.getValue()).get(LexConstants.CHILDREN);
@@ -1294,13 +1294,13 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 						childrenMaps = newList;
 			//			Set<Map<String,Object>> childrenSets = new HashSet<>(childrenMaps);
 			//			childrenMaps = new ArrayList<>(childrenSets);
-			
+
 						int index = 0;
 						for (Map<String, Object> childMap : childrenMaps) {
-							
+
 							int position = childrenMaps.indexOf(childMap);
 							int size = childrenMaps.size()-1;
-			
+
 							String childIdentifier = childMap.get(LexConstants.IDENTIFIER).toString();
 							String reasonAdded = (String) childMap.getOrDefault(LexConstants.REASON, "");
 							Calendar lastUpdatedOn = Calendar.getInstance();
@@ -1310,17 +1310,17 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 							if(addedOn==null) {
 								addedOn = inputFormatterDateTime.format(lastUpdatedOn.getTime()).toString();
 							}
-							
+
 							if (!idToContentMapping.containsKey(childIdentifier)) {
 								throw new ResourceNotFoundException(
 										"Content with identifier: " + childIdentifier + " does not exist.");
 							}
-			
+
 							ContentNode childNode = idToContentMapping.get(childIdentifier);
 							if (!childNode.getMetadata().containsKey(LexConstants.IS_STAND_ALONE)) {
 								childNode.getMetadata().put(LexConstants.IS_STAND_ALONE, true);
 							}
-							
+
 							if(isLearningPath) {
 								if(!childNode.getIdentifier().contains(LexConstants.IMG_SUFFIX)) {
 									String childStatus = (String) childNode.getMetadata().get(LexConstants.STATUS);
@@ -1331,8 +1331,8 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 							}
 							//TODO FUNCTION TO ENSURE CONTENT_TYPE CORRECTNESS WITHIN A HIERARCHY
 							validateChildContentType(applicableChildrenData,childNode,position,size);
-							
-			
+
+
 							// courses and learning path will always have isStandAlone as true
 							// children of KBoard must have isStandAlone as true
 							if ((boolean) childNode.getMetadata().get(LexConstants.IS_STAND_ALONE) == true
@@ -1344,32 +1344,32 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 											.equals(LexConstants.ContentType.KnowledgeBoard.getContentType())
 									&& !contentNodeToUpdate.getMetadata().get(LexConstants.CONTENT_TYPE)
 											.equals(LexConstants.ContentType.Channel.getContentType())) {
-			
+
 								Map<String, Object> updateMap = new HashMap<>();
 								updateMap.put(LexConstants.IS_STAND_ALONE, false);
 								updateMetaRequests.add(new UpdateMetaRequest(childNode.getIdentifier(), updateMap));
 							}
-			
-							
+
+
 							checkContentSharingConstraints(contentNodeToUpdate, childNode);
-			
+
 							Map<String, Object> relationMetaData = new HashMap<>();
-			
+
 							relationMetaData.put(LexConstants.INDEX, index);
 							relationMetaData.put(LexConstants.REASON, reasonAdded);
 							relationMetaData.put(LexConstants.CHILDREN_CLASSIFIERS, childrenClassifiers);
 							relationMetaData.put(LexConstants.ADDED_ON, addedOn);
-			
+
 							updateRelationRequests.add(new UpdateRelationRequest(contentNodeToUpdate.getIdentifier(),
 									childIdentifier, relationMetaData));
-			
+
 							if (idToContentMapping.containsKey(childIdentifier + LexConstants.IMG_SUFFIX)) {
-			
+
 								ContentNode childImageNode = idToContentMapping.get(childIdentifier + LexConstants.IMG_SUFFIX);
 								if (!childImageNode.getMetadata().containsKey(LexConstants.IS_STAND_ALONE)) {
 									childImageNode.getMetadata().put(LexConstants.IS_STAND_ALONE, true);
 								}
-			
+
 								if ((boolean) childImageNode.getMetadata().get(LexConstants.IS_STAND_ALONE) == true
 										&& !childImageNode.getMetadata().get(LexConstants.CONTENT_TYPE)
 												.equals(LexConstants.ContentType.Course.getContentType())
@@ -1383,16 +1383,16 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 									updateMap.put(LexConstants.IS_STAND_ALONE, false);
 									updateMetaRequests.add(new UpdateMetaRequest(childImageNode.getIdentifier(), updateMap));
 								}
-			
+
 								checkContentSharingConstraints(contentNodeToUpdate,
 										idToContentMapping.get(childIdentifier + LexConstants.IMG_SUFFIX));
-			
+
 								Map<String, Object> imageRelationMetaData = new HashMap<>();
 								imageRelationMetaData.put(LexConstants.INDEX, index);
 								imageRelationMetaData.put(LexConstants.REASON, reasonAdded);
 								imageRelationMetaData.put(LexConstants.CHILDREN_CLASSIFIERS, childrenClassifiers);
 								imageRelationMetaData.put(LexConstants.ADDED_ON, addedOn);
-			
+
 								updateRelationRequests.add(new UpdateRelationRequest(contentNodeToUpdate.getIdentifier(),
 										childIdentifier + LexConstants.IMG_SUFFIX, imageRelationMetaData));
 							}
@@ -1404,7 +1404,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				graphService.deleteChildren(rootOrg, idsForChildrenDeletion, transaction);
 				graphService.updateNodesV2(rootOrg, updateMetaRequests, transaction);
 				graphService.mergeRelations(rootOrg, updateRelationRequests, transaction);
-				
+
 				if(authoringDisabledIds.size()>0) {
 					throw new BadRequestException("Invalid ids : " + authoringDisabledIds);
 				}
@@ -1412,18 +1412,18 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 
 	private List<Map<String, Object>> getContentTypeDataFromConfigRootOrgData(
 			List<Map<String, Object>> configHierarchyData, String contentType) {
-		
+
 		List<Map<String,Object>> applicableChildrenData = new ArrayList<>();
 		for(Map<String, Object> data:configHierarchyData) {
 			if(data.get(LexConstants.CONTENT_TYPE).equals(contentType)) {
 				applicableChildrenData.add(data);
 			}
 		}
-		
+
 		if(applicableChildrenData==null||applicableChildrenData.isEmpty()) {
 			throw new BadRequestException("No data in configHierarchy table for " + contentType);
 		}
-		
+
 		return applicableChildrenData;
 	}
 
@@ -1452,7 +1452,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		if (hierarchy == null || hierarchy.isEmpty())
 			return;
 
-		//add all original ids and .img ids to idsToFetch list 
+		//add all original ids and .img ids to idsToFetch list
 		List<String> contentIdsToFetch = new ArrayList<>(hierarchy.keySet());
 		//all possible identifiers are added to contentIdsToFetch list
 		getChildrenGettingAttached(contentIdsToFetch, hierarchy);
@@ -1469,7 +1469,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		List<String> idsForChildrenDeletion = new ArrayList<>();
 		List<UpdateMetaRequest> updateMetaRequests = new ArrayList<>();
 		List<String> authoringDisabledIds = new ArrayList<>();
-		
+
 		//iterating on requestMap
 		for (Map.Entry<String, Object> entry : hierarchy.entrySet()) {
 			Boolean isLearningPath = false;
@@ -1477,11 +1477,11 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			if (!idToContentMapping.containsKey(entry.getKey())) {
 				throw new ResourceNotFoundException("Content with identifier: " + entry.getKey() + " does not exist.");
 			}
-			
+
 			//if content is KB OR content is not live -> original id and node is returned
 			//else .img id and node is returned
 			ContentNode contentNodeToUpdate = findContentNodeToUpdate(idToContentMapping, entry);
-			
+
 			// content is in live and image node does not exist so not updating the hierarchy
 			if (contentNodeToUpdate == null)
 				continue;
@@ -1489,29 +1489,29 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			if(contentNodeToUpdate.getMetadata().get(LexConstants.CONTENT_TYPE).equals(LexConstants.ContentType.LearningPath.getContentType())) {
 				isLearningPath=true;
 			}
-			
+
 			//if authoring disabled is null or false continue else add to list
 			Boolean authoringDisabled =  (Boolean) contentNodeToUpdate.getMetadata().get(LexConstants.AUTHORING_DISABLED);
 			Boolean isMetaEditingDisabled = (Boolean) contentNodeToUpdate.getMetadata().get(LexConstants.META_EDIT_DISABLED);
-			
+
 			if(authoringDisabled==null) {
 				authoringDisabled=false;
 			}
-			
+
 			if(isMetaEditingDisabled==null) {
 				isMetaEditingDisabled=false;
 			}
-			
+
 			if(authoringDisabled==true||isMetaEditingDisabled==true) {
 				authoringDisabledIds.add(contentNodeToUpdate.getIdentifier());
 			}
-			
+
 			else {
 				// removing this particular id from parents of its children.
 				//??????????????
 				ensureHierarchyCorrectnessForHierarchyUpdate(idToContentMapping, contentNodeToUpdate);
 				idsForChildrenDeletion.add(contentNodeToUpdate.getIdentifier());
-	
+
 				// create the new Relations, image node will be in the same index
 				List<Map<String, Object>> childrenMaps = (List<Map<String, Object>>) ((Map<String, Object>) entry
 						.getValue()).get(LexConstants.CHILDREN);
@@ -1519,10 +1519,10 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				childrenMaps = newList;
 	//			Set<Map<String,Object>> childrenSets = new HashSet<>(childrenMaps);
 	//			childrenMaps = new ArrayList<>(childrenSets);
-	
+
 				int index = 0;
 				for (Map<String, Object> childMap : childrenMaps) {
-					
+
 					String childIdentifier = childMap.get(LexConstants.IDENTIFIER).toString();
 					String reasonAdded = (String) childMap.getOrDefault(LexConstants.REASON, "");
 					Calendar lastUpdatedOn = Calendar.getInstance();
@@ -1532,17 +1532,17 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					if(addedOn==null) {
 						addedOn = inputFormatterDateTime.format(lastUpdatedOn.getTime()).toString();
 					}
-					
+
 					if (!idToContentMapping.containsKey(childIdentifier)) {
 						throw new ResourceNotFoundException(
 								"Content with identifier: " + childIdentifier + " does not exist.");
 					}
-	
+
 					ContentNode childNode = idToContentMapping.get(childIdentifier);
 					if (!childNode.getMetadata().containsKey(LexConstants.IS_STAND_ALONE)) {
 						childNode.getMetadata().put(LexConstants.IS_STAND_ALONE, true);
 					}
-					
+
 					if(isLearningPath) {
 						if(!childNode.getIdentifier().contains(LexConstants.IMG_SUFFIX)) {
 							String childStatus = (String) childNode.getMetadata().get(LexConstants.STATUS);
@@ -1553,8 +1553,8 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					}
 					//FUNCTION TO ENSURE CONTENT_TYPE CORRECTNESS WITHIN A HIERARCHY
 					//validateChildContentType(contentNodeToUpdate,childNode,position,size);
-					
-	
+
+
 					// courses and learning path will always have isStandAlone as true
 					// children of KBoard must have isStandAlone as true
 					if ((boolean) childNode.getMetadata().get(LexConstants.IS_STAND_ALONE) == true
@@ -1566,34 +1566,34 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 									.equals(LexConstants.ContentType.KnowledgeBoard.getContentType())
 							&& !contentNodeToUpdate.getMetadata().get(LexConstants.CONTENT_TYPE)
 									.equals(LexConstants.ContentType.Channel.getContentType())) {
-	
+
 						Map<String, Object> updateMap = new HashMap<>();
 						updateMap.put(LexConstants.IS_STAND_ALONE, false);
 						updateMetaRequests.add(new UpdateMetaRequest(childNode.getIdentifier(), updateMap));
 					}
-	
+
 					if (migration.toLowerCase().equals("no")) {
 						checkLearningPathConstraints(contentNodeToUpdate, idToContentMapping.get(childIdentifier));
 					}
 					checkContentSharingConstraints(contentNodeToUpdate, childNode);
-	
+
 					Map<String, Object> relationMetaData = new HashMap<>();
-	
+
 					relationMetaData.put(LexConstants.INDEX, index);
 					relationMetaData.put(LexConstants.REASON, reasonAdded);
 					relationMetaData.put(LexConstants.CHILDREN_CLASSIFIERS, childrenClassifiers);
 					relationMetaData.put(LexConstants.ADDED_ON, addedOn);
-	
+
 					updateRelationRequests.add(new UpdateRelationRequest(contentNodeToUpdate.getIdentifier(),
 							childIdentifier, relationMetaData));
-	
+
 					if (idToContentMapping.containsKey(childIdentifier + LexConstants.IMG_SUFFIX)) {
-	
+
 						ContentNode childImageNode = idToContentMapping.get(childIdentifier + LexConstants.IMG_SUFFIX);
 						if (!childImageNode.getMetadata().containsKey(LexConstants.IS_STAND_ALONE)) {
 							childImageNode.getMetadata().put(LexConstants.IS_STAND_ALONE, true);
 						}
-	
+
 						if ((boolean) childImageNode.getMetadata().get(LexConstants.IS_STAND_ALONE) == true
 								&& !childImageNode.getMetadata().get(LexConstants.CONTENT_TYPE)
 										.equals(LexConstants.ContentType.Course.getContentType())
@@ -1607,16 +1607,16 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 							updateMap.put(LexConstants.IS_STAND_ALONE, false);
 							updateMetaRequests.add(new UpdateMetaRequest(childImageNode.getIdentifier(), updateMap));
 						}
-	
+
 						checkContentSharingConstraints(contentNodeToUpdate,
 								idToContentMapping.get(childIdentifier + LexConstants.IMG_SUFFIX));
-	
+
 						Map<String, Object> imageRelationMetaData = new HashMap<>();
 						imageRelationMetaData.put(LexConstants.INDEX, index);
 						imageRelationMetaData.put(LexConstants.REASON, reasonAdded);
 						imageRelationMetaData.put(LexConstants.CHILDREN_CLASSIFIERS, childrenClassifiers);
 						imageRelationMetaData.put(LexConstants.ADDED_ON, addedOn);
-	
+
 						updateRelationRequests.add(new UpdateRelationRequest(contentNodeToUpdate.getIdentifier(),
 								childIdentifier + LexConstants.IMG_SUFFIX, imageRelationMetaData));
 					}
@@ -1628,7 +1628,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		graphService.deleteChildren(rootOrg, idsForChildrenDeletion, transaction);
 		graphService.updateNodesV2(rootOrg, updateMetaRequests, transaction);
 		graphService.mergeRelations(rootOrg, updateRelationRequests, transaction);
-		
+
 		if(authoringDisabledIds.size()>0) {
 			throw new BadRequestException("Invalid ids : " + authoringDisabledIds);
 		}
@@ -1652,21 +1652,21 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		for(Map<String, Object> childrenData : validChildrenData) {
 			validChildrenContentTypes.add((String) childrenData.get("childContentType"));
 		}
-		
+
 		String childContentType = (String) childNode.getMetadata().get(LexConstants.CONTENT_TYPE);
-		
+
 		if(!validChildrenContentTypes.contains(childContentType)) {
 			throw new ConflictErrorException("Cannot add content of type : " + childContentType + " into parent contentType", null);
 		}
-		
+
 		Map<String,Object> dataToCompare = new HashMap<>();
-		
+
 		for(Map<String, Object> childData:validChildrenData) {
 			if(childData.get("childContentType").equals(childNode.getMetadata().get(LexConstants.CONTENT_TYPE))) {
 				dataToCompare=childData;
 			}
 		}
-		
+
 			Map<String,Object> conditionsMap = (Map<String, Object>) dataToCompare.get("condition");
 			String positionData = (String) dataToCompare.get("position");
 			if(conditionsMap!=null && !(conditionsMap.isEmpty())) {
@@ -1680,11 +1680,11 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					}
 				}
 			}
-			
+
 			if(notAllowedToUpdateStatuses.contains(childNode.getMetadata().get(LexConstants.STATUS))) {
 				throw new ConflictErrorException("Cannot add : " + childNode.getIdentifier() + "as status is either ['Deleted','Expired','Unpublished'] ", null);
 			}
-			
+
 			if(positionData!=null &&  !(positionData.isEmpty())) {
 				if(positionData.equalsIgnoreCase("last")) {
 					if(position!=size) {
@@ -1696,7 +1696,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 						throw new ConflictErrorException("Child Content Type " + childContentType + " must be in first position in hierarchy" , null);
 					}
 				}
-				
+
 			}
 	}
 
@@ -1709,7 +1709,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				.equals(LexConstants.ContentType.KnowledgeBoard.getContentType())) {
 			return contentNodeToUpdate;
 		}
-		
+
 		if (contentNodeToUpdate.getMetadata().get(LexConstants.STATUS).equals(LexConstants.Status.Live.getStatus())) {
 
 			String imageNodeIdentifier = entry.getKey() + LexConstants.IMG_SUFFIX;
@@ -1732,7 +1732,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		Map<String, Object> hierarchyMap = new HashMap<>();
 		List<String> fields = new ArrayList<>();
 		hierarchyMap = session.readTransaction(new TransactionWork<Map<String, Object>>() {
-			
+
 			@Override
 			public Map<String, Object> execute(Transaction tx) {
 				try {
@@ -1741,7 +1741,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					e.printStackTrace();
 				}
 				return null;
-				
+
 			}
 		});
 //		System.out.println(hierarchyMap);
@@ -1749,8 +1749,8 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		session.close();
 		return hierarchyMap;
 	}
-	
-	
+
+
 	@Override
 	public Map<String, Object> getOnlyLiveContentHierarchy(String identifier, String rootOrg, String org)
 			throws BadRequestException, Exception {
@@ -1760,7 +1760,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		Map<String, Object> hierarchyMap = new HashMap<>();
 		List<String> fields = new ArrayList<>();
 		hierarchyMap = session.readTransaction(new TransactionWork<Map<String, Object>>() {
-			
+
 			@Override
 			public Map<String, Object> execute(Transaction tx) {
 				try {
@@ -1769,10 +1769,10 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					e.printStackTrace();
 				}
 				return null;
-				
+
 			}
 		});
-		
+
 		if(hierarchyMap==null) {
 			throw new BadRequestException("Identifier does not exist : " + identifier);
 		}
@@ -1780,7 +1780,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		session.close();
 		return hierarchyMap;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> getContentHierarchyV2(String identifier, String rootOrg, String org,Map<String,Object> requestMap)
@@ -1800,7 +1800,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				return null;
 			}
 		});
-		
+
 		if(hierarchyMap==null) {
 			throw new BadRequestException("Could not find identifier with : " + identifier);
 		}
@@ -1808,38 +1808,38 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		session.close();
 		return hierarchyMap;
 	}
-	
-	
-	
+
+
+
 	public Map<String, String> contentEditorDelete(String rootOrg,String org, Map<String, Object> requestMap) throws Exception {
-		
+
 		String identifier = (String) requestMap.get(LexConstants.IDENTIFIER);
 		if(identifier==null||identifier.isEmpty()) {
 			throw new BadRequestException("Invalid input");
 		}
-		
+
 		List<String> idsToLogicalDelete = new ArrayList<>();
 		List<String> idsToHardDelete = new ArrayList<>();
-		
+
 		Session session = neo4jDriver.session();
 		Transaction tx = session.beginTransaction();
-		
+
 		ContentNode node = graphService.getNodeByUniqueIdV3(rootOrg, identifier, tx);
-		
+
 		Map<String, Object> nodeMap = node.getMetadata();
-		
+
 		Boolean isStandAlone = (Boolean) nodeMap.getOrDefault(LexConstants.IS_STAND_ALONE,false);
-		
+
 		if(isStandAlone==null||isStandAlone==false) {
 			throw new ConflictErrorException("Content is stand alone is false cannot delete", null);
 		}
-		
+
 		List<Relation> children = node.getChildren();
-		
+
 		if(children.size()>0) {
 			throw new ConflictErrorException("Content cannot be deleted as children are present", null);
 		}
-		
+
 		if(!identifier.contains(LexConstants.IMG_SUFFIX))
 		{
 			ContentNode imgNode = graphService.getNodeByUniqueIdV3(rootOrg, identifier+LexConstants.IMG_SUFFIX, tx);
@@ -1847,9 +1847,9 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				throw new ConflictErrorException("Content cannot be deleted as a copy img node exists, delete img node before deleting original node", null);
 			}
 		}
-		
+
 		String status = (String) nodeMap.get(LexConstants.STATUS);
-		
+
 		try {
 			if(status.equals(LexConstants.Status.Live.getStatus())||status.equals(LexConstants.Status.MarkedForDeletion.getStatus())||status.equals(LexConstants.Status.Deleted.getStatus())) {
 				idsToLogicalDelete.add(identifier);
@@ -1871,15 +1871,15 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			Map<String,String> resultMap = new HashMap<>();
 			resultMap.put("Message", "Success");
 			return resultMap;
-		} 
+		}
 		catch (Exception e) {
 			tx.rollbackAsync().toCompletableFuture().get();
 			throw e;
 		}
 		finally {
 			tx.close();
-			session.close();	
-		}	
+			session.close();
+		}
 	}
 
 
@@ -1893,49 +1893,49 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		if (identifier == null || identifier.isEmpty() || authorUuid == null || authorUuid.isEmpty()) {
 			throw new BadRequestException("Invalid input");
 		}
-		
+
 		if(isAdmin==null) {
 			isAdmin=false;
 		}
 		logger.info("Delete called for : " + identifier);
 		logger.info("Request Body : " + requestMap);
-		
+
 		if(isAdmin) {
 			Map<String,String> resultMap = contentEditorDelete(rootOrg, org, requestMap);
 			return resultMap;
 		}
-		
+
 		else {
-			
+
 			Session session = neo4jDriver.session();
 			Transaction tx = session.beginTransaction();
 			Map<String, Object> boolMap = new HashMap<>();
 			boolMap.put("isFirstCall", true);
 			ContentNode node = graphService.getNodeByUniqueIdV3(rootOrg, identifier, tx);
-	
+
 			if (node == null) {
 				throw new ResourceNotFoundException("content with identifier : " + identifier + " not found");
 			}
-	
+
 			Map<String, Object> idsToRetire = new HashMap<>();
 			List<String> idsToHardDelete = new ArrayList<>();
 			List<String> idsToLogicalDelete = new ArrayList<>();
 			Map<String, String> errorMap = new HashMap<>();
 			String topLevelStatus = (String) node.getMetadata().get(LexConstants.STATUS);
-	
+
 			Queue<ContentNode> contentQueue = new LinkedList<>();
 			contentQueue.add(node);
-	
+
 			while (!contentQueue.isEmpty()) {
 				ContentNode subNode = contentQueue.poll();
-	
+
 				// check if deletion is allowed
 				boolean deletable = allowedToDelete(boolMap, subNode, authorUuid, errorMap, topLevelStatus,tx,rootOrg);
-	
+
 				if (deletable) {
 					idsToRetire.put(subNode.getIdentifier(), subNode.getMetadata().get(LexConstants.STATUS));
 				}
-				
+
 				//if not channel or KB add children to contentQueue
 				if (checkKbChannelConstraints(subNode)) {
 					contentQueue.addAll(graphService.getNodesByUniqueIdV2(rootOrg,
@@ -1944,7 +1944,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				}
 				boolMap.put("isFirstCall", false);
 			}
-	
+
 			try {
 				List<UpdateMetaRequest> updateMetaRequests = new ArrayList<>();
 				logger.info("Delete logic is applied for master data: " + idsToRetire.toString());
@@ -1968,15 +1968,15 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				session.close();
 			}
 		}
-		
+
 	}
 
 	private boolean allowedToDelete(Map<String, Object> boolMap, ContentNode node, String uuid,
 			Map<String, String> errorMap, String topStatus,Transaction tx,String rootOrg) throws Exception {
- 
+
 		if((boolean) boolMap.get("isFirstCall")) {
 			if(node.getIdentifier().contains(".img")) {
-				//fetch original node parents and compare with 'node' if not same, do not allow 
+				//fetch original node parents and compare with 'node' if not same, do not allow
 				String orgIdentifier = node.getIdentifier().substring(0, node.getIdentifier().indexOf(LexConstants.IMG_SUFFIX));
 				ContentNode orgNode = graphService.getNodeByUniqueIdV3(rootOrg, orgIdentifier, tx);
 				if(orgNode==null) {
@@ -1986,7 +1986,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				Set<Relation> relParents = new HashSet<>(parents);
 				List<Relation> orgParents = node.getParents();
 				Set<Relation> orgRelParents = new HashSet<>(orgParents);
-				
+
 				boolean equality = relParents.equals(orgRelParents);
 				if(!equality) {
 					throw new ConflictErrorException("cannot delete as original content parents different from .img node " + orgIdentifier, null);
@@ -1997,18 +1997,18 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					throw new ConflictErrorException("cannot delete content as it is reused", null);
 				}
 			}
-			
+
 			if(topStatus.equals(LexConstants.Status.Live.getStatus())||topStatus.equals(LexConstants.Status.MarkedForDeletion.getStatus())||topStatus.equals(LexConstants.Status.Deleted.getStatus())||topStatus.equals(LexConstants.Status.Expired.getStatus())) {
 				// check to see if .img exists for 'node' if exists do not allow delete
 				String identifier = node.getIdentifier() + LexConstants.IMG_SUFFIX;
 				ContentNode imgNode = graphService.getNodeByUniqueIdV3(rootOrg,identifier , tx);
-				
+
 				if(imgNode!=null) {
 					throw new ConflictErrorException("cannot delete original node because .img node is present", null);
 				}
 			}
 		}
-		
+
 //		if ((boolean) boolMap.get("isFirstCall") && node.getParents().size() > 0) {
 //			throw new ConflictErrorException("cannot delete content as it is reused", null);
 //		}
@@ -2111,7 +2111,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 //			graphService.updateNodesV2(rootOrg, updateMetaRequests, transaction);
 //			graphService.deleteNodes(rootOrg, idsToHardDelete, transaction);
 //			transaction.commitAsync().toCompletableFuture().get();
-//			
+//
 //			return errorMap;
 //		} catch (Exception e) {
 //			transaction.rollbackAsync().toCompletableFuture().get();
@@ -2288,7 +2288,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				}
 			}
 //			if (records == null || records.size() == 0) {
-//				
+//
 //				if (records.size() == 0) {
 //					throw new BadRequestException("Identifier does not exist : " + identifier);
 //				}
@@ -2371,7 +2371,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		}
 		return orderChildren(hierarchyMap);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getOnlyLiveHierarchyFromNeo4j(String identifier, String rootOrg, Transaction tx,
 			boolean fieldsPassed, List<String> fields) throws BadRequestException,Exception{
@@ -2463,12 +2463,12 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		}
 		return orderChildren(hierarchyMap);
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getHierarchyFromNeo4jV2(String identifier, String rootOrg, Transaction tx,
 			boolean fieldsPassed, List<String> fields) throws BadRequestException,Exception {
-		
+
 		Map<String,Object> hMap = new HashMap<>();
 		Map<String, Map<String, Object>> idToNodeMapping = new HashMap<>();
 		Map<String, String> relationToLexIdMap = new HashMap<>();
@@ -2476,7 +2476,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		Map<String, Object> visitedMap = new HashMap<>();
 		fields = new ArrayList<>(fields);
 		boolean gotResultFromImage = false;
-		
+
 		if(fieldsPassed) {
 			if(fields==null||fields.isEmpty()) {
 				hMap = getHierarchyFromNeo4j(identifier, rootOrg, tx, false, fields);
@@ -2487,7 +2487,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			Set<String> fieldValues = new HashSet<>(fields);
 			fields = new ArrayList<>(fieldValues);
 			String query = constructFetchQuery(identifier,rootOrg,fields,true);
-			
+
 			StatementResult statementResult = tx.run(query);
 			List<Record> records = statementResult.list();
 			for(Record recordImg : records) {
@@ -2502,7 +2502,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					return nodeMap;
 				}
 			}
-			
+
 			if(!gotResultFromImage) {
 				query = constructFetchQuery(identifier, rootOrg, fields, false);
 				System.out.println(query);
@@ -2514,7 +2514,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					}
 				}
 			}
-			
+
 			for(Record record:records) {
 
 				if (record.get("r").isNull() && record.get("s.identifier").isNull()) {
@@ -2523,19 +2523,19 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					nodeMap.put(LexConstants.CHILDREN, new ArrayList<>());
 					return nodeMap;
 				}
-				
+
 				List<Object> relations = (record.get("r")).asList();
 				Map<String,Object> startNode = createNodeMapData("n", fields, record);
 				Map<String,Object> endNode = createNodeMapData("s", fields, record);
-				
+
 				String sourceId = startNode.get(LexConstants.IDENTIFIER).toString().replace("\"", "");
 				String destinationId = endNode.get(LexConstants.IDENTIFIER).toString().replace("\"", "");
-				
+
 				String immediateParentId = sourceId;
-				
+
 				idToNodeMapping.put(sourceId, startNode);
 				idToNodeMapping.put(destinationId, endNode);
-				
+
 				for (Object relation : relations) {
 					if (!relationToLexIdMap.containsKey(relation.toString())) {
 						relationToLexIdMap.put(relation.toString(), destinationId);
@@ -2570,10 +2570,10 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 						immediateParentId = relationToLexIdMap.get(relation.toString());
 					}
 				}
-				
+
 			}
 			return orderChildren(hierarchyMap);
-			
+
 		}
 		else {
 			hMap = getHierarchyFromNeo4j(identifier, rootOrg, tx, false, fields);
@@ -2582,7 +2582,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 	}
 
 	private Map<String, Object> createNodeMapData(String nodeId, List<String> fields,Record record) {
-		
+
 		Map<String,Object> nodeMap = new HashMap<>();
 		for(String field: fields) {
 //				Value value = record.get(nodeId+"."+field);
@@ -2753,7 +2753,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		String appName;
 		String appUrl;
 		Boolean skipValidations = (Boolean) requestBody.get("skipValidations");
-		
+
 		rootOrg = (String) requestBody.get(LexConstants.ROOT_ORG);
 		if (rootOrg.isEmpty() || rootOrg == null) {
 			throw new BadRequestException("rootOrg is Empty");
@@ -2878,7 +2878,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 
 		// validates all children to check if status is appropriate
 		// validateChildrenStatus(contentMeta, currentStatus);
-		
+
 		//calculating hasAssessment
 		calculateHasAssessment(contentMeta);
 
@@ -2945,7 +2945,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		return response;
 	}
 
-	
+
 
 	private boolean checkStandAlone(String identifier, String rootOrg, String contentType) {
 		String query = "match(n{identifier:'" + identifier + "'})-[r:Has_Sub_Content]->(s) where n:Shared or n:"
@@ -3168,14 +3168,14 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		return hierarchyMap;
 	}
 
-	
+
 	@SuppressWarnings("unchecked")
 	private void calculateHasAssessment(Map<String, Object> contentMeta) {
-		
+
 		Queue<Map<String,Object>> parentObjs = new LinkedList<>();
 		parentObjs.add(contentMeta);
 		while(!parentObjs.isEmpty()) {
-			
+
 			Map<String,Object> parent = parentObjs.poll();
 
 			String categoryType = (String) parent.getOrDefault(LexConstants.CATEGORY_TYPE, "");
@@ -3184,11 +3184,11 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			if(categoryType.equals(LexConstants.ASSESSMENT)||resourceType.equals(LexConstants.ASSESSMENT)) {
 				parent.put(LexConstants.HAS_ASSESSMENT, true);
 			}
-			
+
 			List<Map<String,Object>> childrenList = (List<Map<String, Object>>) parent.get(LexConstants.CHILDREN);
 			for(Map<String, Object> child:childrenList) {
 				Boolean hasAssessment = (Boolean) child.get(LexConstants.HAS_ASSESSMENT);
-				
+
 				if(hasAssessment!=null && hasAssessment==true) {
 					parent.put(LexConstants.HAS_ASSESSMENT, true);
 				}
@@ -3200,16 +3200,16 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 					child.put(LexConstants.HAS_ASSESSMENT, true);
 					parent.put(LexConstants.HAS_ASSESSMENT, true);
 				}
-				
+
 			}
-			
+
 			parentObjs.addAll(childrenList);
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private List<Map<String, Object>> convertToFlatList(Map<String, Object> contentMeta) {
 		List<Map<String, Object>> contentList = new ArrayList<>();
@@ -3342,13 +3342,13 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		}
 		return allCreators;
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void removeAllDraftImgNodes(Map<String, Object> hierarchy) throws BadRequestException, Exception {
 
 		Queue<Map<String, Object>> parentObjs = new LinkedList<>();
 		parentObjs.add(hierarchy);
-		
+
 		while (!parentObjs.isEmpty()) {
 			Map<String, Object> parent = parentObjs.poll();
 			GraphUtil.mapParser(parent, true);
@@ -3363,8 +3363,8 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			parentObjs.addAll(validChildren);
 		}
 	}
-	
-	
+
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void hierachyForViewing(Map<String, Object> hierarchy) throws BadRequestException, Exception {
 
@@ -3589,14 +3589,14 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		//ACCESS PATH LOGIC
 		String apFromReq = (String) contentMeta.get(LexConstants.ACCESS_PATHS);
 		contentMeta.remove(LexConstants.ACCESS_PATHS);
-		
+
 		List<String> accessPaths = new ArrayList<>();
 		if (combinedAccessPaths.contains(apFromReq)) {
 			accessPaths.add(apFromReq);
 		} else {
 			accessPaths.add(rootOrg + "/" + org);
 		}
-		
+
 		contentMeta.put(LexConstants.ACCESS_PATHS, accessPaths);
 
 		String contentType = (String) contentMeta.get(LexConstants.CONTENT_TYPE);
@@ -3618,7 +3618,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			throw new BadRequestException(
 					"Invalid meta for creation. request body must contain contentType, mimeType, createdBy");
 		}
-		
+
 		contentMeta.put(LexConstants.ROOT_ORG, rootOrg);
 
 		if (!contentMeta.containsKey(LexConstants.IS_SEARCHABLE))
@@ -3640,7 +3640,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		if (!contentMeta.containsKey(LexConstants.ARTIFACT_URL))
 			contentMeta.put(LexConstants.ARTIFACT_URL, "");
 
-		
+
 
 		if (!contentMeta.containsKey(LexConstants.CHILD_TITLE))
 			contentMeta.put(LexConstants.CHILD_TITLE, new ArrayList<>());
@@ -3680,7 +3680,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		orgsList.add(orgMap);
 		contentMeta.put(LexConstants.ORG, orgsList);
 
-		
+
 		//TODO expiry based on rootOrg from appConfig
 		String dataSource = null;
 		logger.info("fetching config for expiry-date");
@@ -3689,17 +3689,17 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		if (config != null && (config.getValue() != null && !config.getValue().isEmpty())) {
 			dataSource = config.getValue();
 		}
-		
+
 		if(dataSource==null || dataSource.equalsIgnoreCase("0")) {
 			contentMeta.put(LexConstants.EXPIRY_DATE, "99991231T235959+0000");
 		}
 		else {
-			
+
 			Integer months = Integer.parseInt(dataSource);
 			Calendar dueDate = Calendar.getInstance();
 			dueDate.add(Calendar.DAY_OF_MONTH, months);
 			contentMeta.put(LexConstants.EXPIRY_DATE,inputFormatterDateTime.format(dueDate.getTime()));
-			
+
 //			Integer months = Integer.parseInt(dataSource);
 //			Calendar dueDate = Calendar.getInstance();
 //			dueDate.add(Calendar.MONTH, months);
@@ -3851,7 +3851,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		String imageNodeIdentifier = identifier + LexConstants.IMG_SUFFIX;
 		contentNode.getMetadata().put(LexConstants.IDENTIFIER, imageNodeIdentifier);
 		contentNode.getMetadata().put(LexConstants.STATUS, LexConstants.DRAFT);
-		contentNode.getMetadata().put(LexConstants.PUBLISHER_DETAILS, new ArrayList<>());
+		//contentNode.getMetadata().put(LexConstants.PUBLISHER_DETAILS, new ArrayList<>());
 		contentNode.getMetadata().put(LexConstants.COMMENTS, new ArrayList<>());
 
 		graphService.createNodeV2(rootOrg, contentNode.getMetadata(), transaction);
@@ -4191,7 +4191,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		imageNode.setMetadata(new HashMap<>(contentNode.getMetadata()));
 		imageNode.getMetadata().put(LexConstants.IDENTIFIER, imageNodeIdentifier);
 		imageNode.getMetadata().put(LexConstants.STATUS, LexConstants.DRAFT);
-		imageNode.getMetadata().put(LexConstants.PUBLISHER_DETAILS, new ArrayList<>());
+		//imageNode.getMetadata().put(LexConstants.PUBLISHER_DETAILS, new ArrayList<>());
 		imageNode.getMetadata().put(LexConstants.COMMENTS, new ArrayList<>());
 
 		for (Relation childRelation : contentNode.getChildren()) {
@@ -4233,7 +4233,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		Map<String, Object> hierarchyMap = getHierarchyFromNeo4jV2(rootNodeIdentifier, rootOrg, transaction, true, fields);
 //		Map<String, Object> hierarchyMap = getHierarchyFromNeo4j(rootNodeIdentifier, rootOrg, transaction, false, null);
 		hierachyForViewing(hierarchyMap);
-		
+
 		// running validations on the entire hierarchy.
 //		Map<String, Set<String>> errors = validationsService.contentHierarchyValidations(rootOrg, hierarchyMap);
 //		if (!errors.isEmpty())
@@ -4749,28 +4749,28 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 	@SuppressWarnings({ "unchecked", "unused" })
 	@Override
 	public void contentUnpublish(Map<String, Object> requestMap, String rootOrg, String org) throws BadRequestException, Exception {
-		
+
 		String identifier = (String) requestMap.get(LexConstants.IDENTIFIER);
 		Boolean unPublish = (Boolean) requestMap.get("unpublish");
 		ObjectMapper mapper = new ObjectMapper();
 		if(rootOrg==null||rootOrg.isEmpty()||org==null||org.isEmpty()||identifier==null||identifier.isEmpty()||unPublish==null) {
 			throw new BadRequestException("Invalid request body");
 		}
-		
-		
+
+
 		if(unPublish) {
-			
+
 			Session session = neo4jDriver.session();
 			Transaction tx = session.beginTransaction();
 			Map<String, Object> boolMap = new HashMap<>();
 			boolMap.put("isFirstCall", true);
 			Map<String,Object> errorMap = new HashMap<>();
 			ContentNode node = graphService.getNodeByUniqueIdV3(rootOrg, identifier, tx);
-			
+
 			if(node==null) {
 				throw new ResourceNotFoundException("Content with identifier does not exist");
 			}
-			
+
 			if(!identifier.contains(LexConstants.IMG_SUFFIX)) {
 				String imgId = identifier + LexConstants.IMG_SUFFIX;
 				ContentNode imgNode = graphService.getNodeByUniqueIdV3(rootOrg, imgId, tx);
@@ -4781,28 +4781,28 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			else if(identifier.contains(LexConstants.IMG_SUFFIX)) {
 				throw new BadRequestException("Cannot unpublish as img node is present");
 				}
-			
+
 			List<String> idsToUnpublish = new ArrayList<>();
-			
+
 			Queue<ContentNode> contentQueue = new LinkedList<>();
 			contentQueue.add(node);
 			Set<String> masterCreators = returnCreatorIds(node);
-			
+
 			while (!contentQueue.isEmpty()) {
 				ContentNode subNode = contentQueue.poll();
-	
+
 				// check if deletion is allowed
 				boolean unpublish = allowedToUnpublish(boolMap, subNode,errorMap, tx,rootOrg,true);
-				
+
 				if (unpublish) {
 					Set<String> creators = returnCreatorIds(subNode);
 					creators.retainAll(masterCreators);
 					if(creators.size()>0) {
 						idsToUnpublish.add(subNode.getIdentifier());
 					}
-					
+
 				}
-				
+
 				//if not channel or KB add children to contentQueue
 				if (checkKbChannelConstraints(subNode)) {
 					contentQueue.addAll(graphService.getNodesByUniqueIdV2(rootOrg,
@@ -4811,11 +4811,11 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				}
 				boolMap.put("isFirstCall", false);
 			}
-			
-			
+
+
 			List<UpdateMetaRequest> updateMetaRequests = new ArrayList<>();
 
-			
+
 			for(String lexId : idsToUnpublish) {
 				Map<String,Object> updateMap = new HashMap<>();
 				updateMap.put(LexConstants.STATUS, LexConstants.Status.UnPublish.getStatus());
@@ -4834,9 +4834,9 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			}
 //			return "Successfully changed status to Unpublish";
 		}
-		
+
 		else {
-			
+
 
 			Session session = neo4jDriver.session();
 			Transaction tx = session.beginTransaction();
@@ -4844,11 +4844,11 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			boolMap.put("isFirstCall", true);
 			Map<String,Object> errorMap = new HashMap<>();
 			ContentNode node = graphService.getNodeByUniqueIdV3(rootOrg, identifier, tx);
-			
+
 			if(node==null) {
 				throw new ResourceNotFoundException("Content with identifier does not exist");
 			}
-			
+
 			if(!identifier.contains(LexConstants.IMG_SUFFIX)) {
 				String imgId = identifier + LexConstants.IMG_SUFFIX;
 				ContentNode imgNode = graphService.getNodeByUniqueIdV3(rootOrg, imgId, tx);
@@ -4859,28 +4859,28 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			else if(identifier.contains(LexConstants.IMG_SUFFIX)) {
 				throw new BadRequestException("Cannot change to Draft as img node is present");
 				}
-			
+
 			List<String> idsToUnpublish = new ArrayList<>();
-			
+
 			Queue<ContentNode> contentQueue = new LinkedList<>();
 			contentQueue.add(node);
 			Set<String> masterCreators = returnCreatorIds(node);
-			
+
 			while (!contentQueue.isEmpty()) {
 				ContentNode subNode = contentQueue.poll();
-	
+
 				// check if deletion is allowed
 				boolean unpublish = allowedToUnpublish(boolMap, subNode,errorMap, tx,rootOrg,false);
-				
+
 				if (unpublish) {
 					Set<String> creators = returnCreatorIds(subNode);
 					creators.retainAll(masterCreators);
 					if(creators.size()>0) {
 						idsToUnpublish.add(subNode.getIdentifier());
 					}
-					
+
 				}
-				
+
 				//if not channel or KB add children to contentQueue
 				if (checkKbChannelConstraints(subNode)) {
 					contentQueue.addAll(graphService.getNodesByUniqueIdV2(rootOrg,
@@ -4889,11 +4889,11 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				}
 				boolMap.put("isFirstCall", false);
 			}
-			
-			
+
+
 			List<UpdateMetaRequest> updateMetaRequests = new ArrayList<>();
 
-			
+
 			for(String lexId : idsToUnpublish) {
 				Map<String,Object> updateMap = new HashMap<>();
 				updateMap.put(LexConstants.STATUS, LexConstants.Status.Draft.getStatus());
@@ -4916,7 +4916,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 
 	private boolean allowedToUnpublish(Map<String, Object> boolMap, ContentNode node, Map<String, Object> errorMap,
 			Transaction tx, String rootOrg,Boolean toUnpublish) {
-		
+
 		if(toUnpublish) {
 			if((boolean) boolMap.get("isFirstCall")) {
 				if(node.getParents().size()>0) {
@@ -4931,42 +4931,42 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 			}
 		}
 		return true;
-	}	
-	
+	}
+
 	@SuppressWarnings("unchecked")
 	private Set<String> returnCreatorIds(ContentNode node) throws JsonParseException, JsonMappingException, IOException{
-		
+
 		Set<String> creators = new HashSet<>();
 		List<Map<String,Object>> creatorContacts = (List<Map<String, Object>>) node.getMetadata().get(LexConstants.CREATOR_CONTACTS);
-		
+
 		for(Map<String, Object> creatorObj:creatorContacts) {
 			creators.add((String) creatorObj.get("id"));
 		}
 		return creators;
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, Object>> getMultipleHierarchy(String rootOrg, String org, Map<String, Object> requestMap) throws BadRequestException,Exception {
-		
+
 		List<String> identifiers = (List<String>) requestMap.get(LexConstants.IDENTIFIER);
 		List<String> fields = (List<String>) requestMap.get(LexConstants.FIELDS);
 		if(rootOrg==null||rootOrg.isEmpty()||org==null||org.isEmpty()||identifiers==null||identifiers.isEmpty()) {
 			throw new BadRequestException("Invalid input");
 		}
-		
+
 		Map<String,Object> rMap = new HashMap<>();
 		rMap.put(LexConstants.FIELDS, fields);
 		List<Map<String,Object>> hierarchyList = new ArrayList<>();
-		
+
 		for(String identifier:identifiers) {
 			Map<String,Object> hMap = getContentHierarchyV2(identifier,rootOrg,org,rMap);
 			hierarchyList.add(hMap);
 		}
-		
+
 		return hierarchyList;
 	}
 
-	
+
 }
