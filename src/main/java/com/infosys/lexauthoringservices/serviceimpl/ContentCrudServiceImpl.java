@@ -1889,6 +1889,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		String identifier = (String) requestMap.get(LexConstants.IDENTIFIER);
 		String authorUuid = (String) requestMap.get(LexConstants.AUTHOR);
 		Boolean isAdmin = (Boolean) requestMap.get("isAdmin");
+		Boolean deleteChildren = (Boolean) requestMap.getOrDefault("deleteChildren", false);
 
 		if (identifier == null || identifier.isEmpty() || authorUuid == null || authorUuid.isEmpty()) {
 			throw new BadRequestException("Invalid input");
@@ -1937,7 +1938,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 				}
 
 				//if not channel or KB add children to contentQueue
-				if (checkKbChannelConstraints(subNode)) {
+				if (checkKbChannelConstraints(subNode) && deleteChildren) {
 					contentQueue.addAll(graphService.getNodesByUniqueIdV2(rootOrg,
 							subNode.getChildren().stream().map(child -> child.getEndNodeId()).collect(Collectors.toList()),
 							tx));
