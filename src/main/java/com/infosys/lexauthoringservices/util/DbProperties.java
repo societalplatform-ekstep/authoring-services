@@ -21,6 +21,9 @@ public class DbProperties {
 	@Value("${infosys.es.host}")
 	private String esHost;
 
+	@Value("${infosys.es.auth.enabled}")
+	private boolean esAuthEnabled;
+
 	@Value("${infosys.es.port}")
 	private String esPort;
 
@@ -29,7 +32,7 @@ public class DbProperties {
 
 	@Value("${infosys.es.password}")
 	private String esPassword;
-	
+
 	@Value("${infosys.neo.timeout}")
 	private Long neoTimeout;
 
@@ -66,5 +69,9 @@ public class DbProperties {
 
 	public String getEsPassword() {
 		return esPassword;
+	}
+
+	public boolean getEsAuthEnabled() {
+		return esAuthEnabled;
 	}
 }

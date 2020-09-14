@@ -22,18 +22,24 @@ public class EsConfig {
 
 	@Bean(destroyMethod = "close")
 	public RestHighLevelClient restHighLevelClient() {
+		return new RestHighLevelClient(restClientBuilder());
+	}
 
-		final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-		credentialsProvider.setCredentials(AuthScope.ANY,
-				new UsernamePasswordCredentials(dbProps.getEsUser(), dbProps.getEsPassword()));
+	@Bean(destroyMethod = "close")
+	public RestClient restClient() {
+		return restClientBuilder().build();
+	}
 
-		RestClientBuilder builder = RestClient
-				.builder(new HttpHost(dbProps.getEsHost(), Integer.parseInt(dbProps.getEsPort())))
-				.setHttpClientConfigCallback(
-						httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
-
-		RestHighLevelClient client = new RestHighLevelClient(builder);
-
-		return client;
+	public RestClientBuilder restClientBuilder() {
+		HttpHost[] hosts = new HttpHost[1];
+		hosts[0] = new HttpHost(dbProps.getEsHost(), Integer.parseInt(dbProps.getEsPort()));
+		RestClientBuilder builder = RestClient.builder(hosts);
+		if (dbProps.getEsAuthEnabled()) {
+			final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+			credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(dbProps.getEsUser(), dbProps.getEsPassword()));
+			builder.setHttpClientConfigCallback(
+					httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
+		}
+		return builder;
 	}
 }
