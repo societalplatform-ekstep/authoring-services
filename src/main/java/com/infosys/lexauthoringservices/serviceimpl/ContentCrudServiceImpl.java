@@ -1889,7 +1889,7 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 		String identifier = (String) requestMap.get(LexConstants.IDENTIFIER);
 		String authorUuid = (String) requestMap.get(LexConstants.AUTHOR);
 		Boolean isAdmin = (Boolean) requestMap.get("isAdmin");
-		Boolean deleteChildren = (Boolean) requestMap.getOrDefault("deleteChildren", false);
+		Boolean deleteChildren = (Boolean) requestMap.getOrDefault("deleteChildren", true);
 
 		if (identifier == null || identifier.isEmpty() || authorUuid == null || authorUuid.isEmpty()) {
 			throw new BadRequestException("Invalid input");
