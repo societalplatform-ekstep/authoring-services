@@ -1828,15 +1828,15 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 
 		Map<String, Object> nodeMap = node.getMetadata();
 
-		Boolean isStandAlone = (Boolean) nodeMap.getOrDefault(LexConstants.IS_STAND_ALONE,false);
+		List<Relation> parents = node.getParents();
 
-		if(isStandAlone==null||isStandAlone==false) {
-			throw new ConflictErrorException("Content is stand alone is false cannot delete", null);
+		if(!parents.isEmpty()) {
+			throw new ConflictErrorException("Content cannot be deleted as parents are present", null);
 		}
 
 		List<Relation> children = node.getChildren();
 
-		if(children.size()>0) {
+		if(!children.isEmpty()) {
 			throw new ConflictErrorException("Content cannot be deleted as children are present", null);
 		}
 
@@ -3181,7 +3181,6 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 
 			String categoryType = (String) parent.getOrDefault(LexConstants.CATEGORY_TYPE, "");
 			String resourceType = (String) parent.getOrDefault(LexConstants.RESOURCE_TYPE, "");
-
 			if(categoryType.equals(LexConstants.ASSESSMENT)||resourceType.equals(LexConstants.ASSESSMENT)) {
 				parent.put(LexConstants.HAS_ASSESSMENT, true);
 			}
@@ -3196,7 +3195,6 @@ public class ContentCrudServiceImpl implements ContentCrudService {
 
 				categoryType = (String) child.getOrDefault(LexConstants.CATEGORY_TYPE, "");
 				resourceType = (String) child.getOrDefault(LexConstants.RESOURCE_TYPE, "");
-
 				if(categoryType.equals(LexConstants.ASSESSMENT)||resourceType.equals(LexConstants.ASSESSMENT)) {
 					child.put(LexConstants.HAS_ASSESSMENT, true);
 					parent.put(LexConstants.HAS_ASSESSMENT, true);
