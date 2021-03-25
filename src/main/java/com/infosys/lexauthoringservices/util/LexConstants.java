@@ -292,4 +292,8 @@ public class LexConstants {
 	public static final String CHILDREN_CLASSIFIERS = "childrenClassifiers";
 	public static final String ADDED_ON = "addedOn";
 	public static final String HAS_ASSESSMENT = "hasAssessment";
+	//	creator Update
+	public static final String USER_ID = "user_id";
+	public static final String TARGET_USER = "target_user";
+	public static final String IS_ADMIN = "isAdmin";
 }
