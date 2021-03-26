@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 @RestController
-@RequestMapping("/v1/content")
+@RequestMapping("/v1/admin/content")
 public class AdminContentControlController {
     @Autowired
     AdminContentControlService adminContentControlService;
