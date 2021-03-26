@@ -45,6 +45,18 @@ public class LexServerProperties {
 	@Value("${infosys.lex.core.ip}")
 	private String lexCoreIp;
 
+	@Value("${user.automation.service.scheme}")
+	private String userAutomationServiceScheme;
+
+	@Value("${user.automation.service.ip}")
+	private String userAutomationServiceIp;
+
+	@Value("${user.automation.service.port}")
+	private String userAutomationServicePort;
+
+	@Value("${user.automation.service.admin-check.endpoint}")
+	private String userAutomationServiceEndpoint;
+
 	public String getLexCoreIp() {
 		return lexCoreIp;
 	}
@@ -95,5 +107,21 @@ public class LexServerProperties {
 
 	public String getEmailServiceUrl() {
 		return emailServiceUrl;
+	}
+
+	public String getUserAutomationServiceScheme() {
+		return userAutomationServiceScheme;
+	}
+
+	public String getUserAutomationServiceIp() {
+		return userAutomationServiceIp;
+	}
+
+	public String getUserAutomationServicePort() {
+		return userAutomationServicePort;
+	}
+
+	public String getUserAutomationServiceEndpoint() {
+		return userAutomationServiceEndpoint;
 	}
 }

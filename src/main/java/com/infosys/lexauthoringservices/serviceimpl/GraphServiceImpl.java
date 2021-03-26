@@ -391,6 +391,20 @@ public class GraphServiceImpl implements GraphService {
 	}
 
 	@Override
+	public List<ContentNode> getContentCreatorNode(String rootOrg, String userId, Transaction transaction) throws Exception {
+
+		Statement statement = new Statement("match (node) where node.creator= '" + userId + "' and (node:"
+				+ rootOrg + " or node:Shared) return node");
+		StatementResult result = transaction.run(statement);
+		List<Record> records = result.list();
+
+		if (records == null || records.isEmpty()) {
+			return new ArrayList<>();
+		}
+		return GraphUtil.createContentNodes(records);
+	}
+
+	@Override
 	public void updateFeatureNodesV2(String rootOrg, List<UpdateMetaRequest> updateMetaRequests,
 			Transaction transaction) throws Exception {
 

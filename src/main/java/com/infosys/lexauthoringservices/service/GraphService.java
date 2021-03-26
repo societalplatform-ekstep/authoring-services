@@ -308,6 +308,12 @@ public interface GraphService {
 	List<Map<String, Object>> getNodesByIdentifier(String rootOrg, List<String> identifiers, List<String> fields,
 			Transaction transaction);
 
-
-
+	/**
+	 * returns metadata of all content created by specific user
+	 *
+	 * @param rootOrg
+	 * @param userId
+	 * @param transaction
+	 */
+	List<ContentNode> getContentCreatorNode(String rootOrg, String userId, Transaction transaction) throws Exception;
 }
