@@ -18,9 +18,9 @@ public class AdminContentControlController {
     AdminContentControlService adminContentControlService;
 
     @PutMapping("/update/creator")
-    public ResponseEntity<?> updateContentCreator(@NotBlank @RequestParam(value = LexConstants.ROOT_ORG, defaultValue = "Infosys") String rootOrg,
-                                                  @NotBlank @RequestParam(value = LexConstants.ORG, defaultValue = "Infosys Ltd") String org,
-                                                  @Valid @RequestBody UpdateContentCreator updateContentCreator) throws Exception {
+    public ResponseEntity<?> updateContentCreator(@RequestParam(value = LexConstants.ROOT_ORG, defaultValue = "Infosys") String rootOrg,
+                                                  @RequestParam(value = LexConstants.ORG, defaultValue = "Infosys Ltd") String org,
+                                                  @RequestBody UpdateContentCreator updateContentCreator) throws Exception {
         adminContentControlService.updateContentCreator(rootOrg, org, updateContentCreator);
         return new ResponseEntity<>(HttpStatus.OK);
     }

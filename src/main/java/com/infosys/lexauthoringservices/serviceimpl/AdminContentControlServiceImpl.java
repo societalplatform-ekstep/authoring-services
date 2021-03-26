@@ -15,11 +15,15 @@ import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
+@Validated
 public class AdminContentControlServiceImpl implements AdminContentControlService {
 
     @Autowired
@@ -37,7 +41,7 @@ public class AdminContentControlServiceImpl implements AdminContentControlServic
     public static SimpleDateFormat inputFormatterDateTime = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ");
 
     @Override
-    public void updateContentCreator(String rootOrg, String org, UpdateContentCreator updateContentCreator)
+    public void updateContentCreator(@NotBlank String rootOrg, @NotBlank String org, @Valid UpdateContentCreator updateContentCreator)
             throws Exception {
         Session session = neo4jDriver.session();
         Transaction transaction = session.beginTransaction();
