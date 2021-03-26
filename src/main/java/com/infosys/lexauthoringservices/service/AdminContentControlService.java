@@ -1,7 +1,7 @@
 package com.infosys.lexauthoringservices.service;
 
-import java.util.Map;
+import com.infosys.lexauthoringservices.model.neo4j.UpdateContentCreator;
 
 public interface AdminContentControlService {
-    void updateContentCreator(String rootOrg, String org, String adminWid, Map<String, Object> requestMap) throws Exception;
+    void updateContentCreator(String rootOrg, String org, UpdateContentCreator updateContentCreator) throws Exception;
 }
