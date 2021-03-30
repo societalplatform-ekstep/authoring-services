@@ -47,29 +47,30 @@ public class AdminContentControlServiceImpl implements AdminContentControlServic
         Transaction transaction = session.beginTransaction();
 
         String userId = updateContentCreator.getUserId();
-        String targetUser = updateContentCreator.getTargetUser();
+        String creatorId = updateContentCreator.getCreatorId();
+        String targetCreatorId = updateContentCreator.getTargetCreatorId();
 
-        Map<String, Boolean> result = userAutomationService.checkOrgAdmin(rootOrg, targetUser);
+        Map<String, Boolean> result = userAutomationService.checkOrgAdmin(rootOrg, userId);
         if (!result.get(LexConstants.IS_ADMIN)) {
-            throw new BadRequestException(targetUser + " must be an admin of rootOrg : " + rootOrg);
+            throw new BadRequestException(userId + " must be an admin of rootOrg : " + rootOrg);
         } else {
             logger.info("Starting PID Call");
-            Map<String, Object> userData = contentCrudServiceImpl.getUserDataFromUserId(rootOrg, targetUser,
+            Map<String, Object> userData = contentCrudServiceImpl.getUserDataFromUserId(rootOrg, targetCreatorId,
                     Arrays.asList(PIDConstants.UUID, PIDConstants.FIRST_NAME, PIDConstants.LAST_NAME));
             logger.info("PID Call is complete");
 
             if (userData == null || userData.isEmpty()) {
-                throw new BadRequestException("No user with id : " + targetUser);
+                throw new BadRequestException("No user with id : " + targetCreatorId);
             }
 
-            Map<?, ?> userDetails = (Map<?, ?>) userData.get(targetUser);
+            Map<?, ?> userDetails = (Map<?, ?>) userData.get(targetCreatorId);
 
             Map<String, Object> userRequiredDetails = new HashMap<>();
             userRequiredDetails.put(LexConstants.NAME, userDetails.get(PIDConstants.FIRST_NAME) + " "
                     + userDetails.get(PIDConstants.LAST_NAME));
             Object identifier = userDetails.get(PIDConstants.UUID);
             if (identifier == null) {
-                throw new BadRequestException("No user with id : " + targetUser);
+                throw new BadRequestException("No user with id : " + targetCreatorId);
             }
             userRequiredDetails.put(LexConstants.ID, userDetails.get(PIDConstants.UUID));
 
@@ -77,9 +78,9 @@ public class AdminContentControlServiceImpl implements AdminContentControlServic
             List<UpdateMetaRequest> metaContents = new ArrayList<>();
 
             try {
-                contents = graphService.getContentCreatorNode(rootOrg, userId, transaction);
+                contents = graphService.getContentCreatorNode(rootOrg, creatorId, transaction);
                 for (ContentNode content : contents) {
-                    content.getMetadata().put(LexConstants.CREATOR, targetUser);
+                    content.getMetadata().put(LexConstants.CREATOR, targetCreatorId);
                     content.getMetadata().put(LexConstants.CREATOR_CONTACTS, userRequiredDetails);
                     content.getMetadata().put(LexConstants.LAST_UPDATED, inputFormatterDateTime.format(Calendar.getInstance().getTime()));
 
