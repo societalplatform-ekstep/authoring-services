@@ -81,7 +81,14 @@ public class AdminContentControlServiceImpl implements AdminContentControlServic
                 contents = graphService.getContentCreatorNode(rootOrg, creatorId, transaction);
                 for (ContentNode content : contents) {
                     content.getMetadata().put(LexConstants.CREATOR, targetCreatorId);
-                    content.getMetadata().put(LexConstants.CREATOR_CONTACTS, userRequiredDetails);
+                    List<Map<String, Object>> creatorContacts = (List<Map<String, Object>>) content.getMetadata().get(LexConstants.CREATOR_CONTACTS);
+                    for (Map<String, Object> creatorsContact : creatorContacts) {
+                        if (creatorsContact.get(LexConstants.ID).equals(creatorId)) {
+                            creatorsContact.put(LexConstants.ID, userRequiredDetails.get(LexConstants.ID));
+                            creatorsContact.put(LexConstants.NAME, userRequiredDetails.get(LexConstants.NAME));
+                        }
+                    }
+                    content.getMetadata().put(LexConstants.CREATOR_CONTACTS, creatorContacts);
                     content.getMetadata().put(LexConstants.LAST_UPDATED, inputFormatterDateTime.format(Calendar.getInstance().getTime()));
 
                     UpdateMetaRequest metaRequest = new UpdateMetaRequest(content.getIdentifier(), content.getMetadata());
